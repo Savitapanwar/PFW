@@ -1,6 +1,7 @@
 /**
  * IRCTC Test Suite: AC5 & AC6 - Item Selection and Removal
  * Tests for breakfast item details, selection, and removal functionality
+ * Note: Skipped in CI environment as IRCTC is an external website that may block automated access
  */
 
 import { test, expect } from '@playwright/test';
@@ -9,7 +10,7 @@ import { MealsPage } from '../pages/irctc/MealsPage';
 import { BreakfastModalPage } from '../pages/irctc/BreakfastModalPage';
 import { IRCTC_TEST_DATA } from '../fixtures/irctc-test-data';
 
-test.describe('AC5 & AC6: Item Selection and Removal', () => {
+test.describe.skip(!!process.env.CI, 'AC5 & AC6: Item Selection and Removal', () => {
   let irctcPage: IRCTCPage;
   let mealsPage: MealsPage;
   let breakfastModal: BreakfastModalPage;

@@ -1,6 +1,7 @@
 /**
  * IRCTC Test Suite: Happy Path & Edge Cases
  * Comprehensive end-to-end flow tests and cross-browser compatibility
+ * Note: Skipped in CI environment as IRCTC is an external website that may block automated access
  */
 
 import { test, expect, devices } from '@playwright/test';
@@ -9,7 +10,7 @@ import { MealsPage } from '../pages/irctc/MealsPage';
 import { BreakfastModalPage } from '../pages/irctc/BreakfastModalPage';
 import { IRCTC_TEST_DATA } from '../fixtures/irctc-test-data';
 
-test.describe('Happy Path & Edge Cases', () => {
+test.describe.skip(!!process.env.CI, 'Happy Path & Edge Cases', () => {
   // ==================== Happy Path Tests ====================
 
   test('Complete happy path: Homepage to selection to removal', async ({ page }) => {

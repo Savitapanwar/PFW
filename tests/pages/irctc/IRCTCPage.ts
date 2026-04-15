@@ -17,10 +17,45 @@ export class IRCTCPage {
 
   /**
    * Navigate to IRCTC homepage
+   * @param timeout - Optional timeout in milliseconds (default: 30000ms)
    */
-  async navigate(): Promise<void> {
-    await this.page.goto(IRCTC_TEST_DATA.baseUrl);
-    await this.page.waitForLoadState('networkidle');
+  async navigate(timeout: number = 30000): Promise<void> {
+    try {
+      await this.page.goto(IRCTC_TEST_DATA.baseUrl, { 
+        waitUntil: 'domcontentloaded',
+        timeout: timeout
+      });
+      
+      // Wait for page to be ready (shorter wait than networkidle)
+      await this.page.waitForLoadState('domcontentloaded');
+    } catch (error) {
+      console.error(`Failed to navigate to ${IRCTC_TEST_DATA.baseUrl}:`, error);
+      
+      // If in CI environment, skip test with helpful message
+      if (process.env.CI) {
+        console.warn(
+          'Test skipped: IRCTC website unreachable in CI environment. ' +
+          'This is expected for external sites. Run locally to validate.'
+        );
+        this.page.context().browser()?.close();
+      }
+      throw error;
+    }
+  }
+
+  /**
+   * Navigate with automatic fallback for CI environments
+   */
+  async navigateWithFallback(): Promise<void> {
+    try {
+      await this.navigate(20000); // Shorter timeout for CI
+    } catch (error) {
+      if (process.env.CI) {
+        console.log('⚠️ Skipping IRCTC tests in CI (website unreachable from GitHub Actions)');
+        console.log('✅ Run tests locally to validate: npm run test:irctc:headed');
+      }
+      throw error;
+    }
   }
 
   /**
